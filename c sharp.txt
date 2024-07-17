@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+
+class Customer
+{
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string PersonalNumber { get; }
+
+    public Customer(string firstName, string lastName, string personalNumber)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PersonalNumber = personalNumber;
+    }
+}
+
+class Product
+{
+    public string Name { get; }
+    public string Code { get; }
+    public int Quantity { get; }
+    public decimal Price { get; }
+    public decimal Cost => Quantity * Price;
+
+    public Product(string name, string code, int quantity, decimal price)
+    {
+        Name = name;
+        Code = code;
+        Quantity = quantity;
+        Price = price;
+    }
+}
+
+class OnlineBooking
+{
+    public Customer Customer { get; }
+    public List<Product> Products { get; }
+    public DateTime OrderDate { get; }
+
+    public OnlineBooking(Customer customer, List<Product> products, DateTime orderDate)
+    {
+        Customer = customer;
+        Products = products;
+        OrderDate = orderDate;
+    }
+
+    public bool IsDiscountEligible()
+    {
+        // Check if the order date is the 256th day of the year
+        DateTime promoDate = IsLeapYear(OrderDate.Year) ? 
+            new DateTime(OrderDate.Year, 9, 12) : 
+            new DateTime(OrderDate.Year, 9, 13);
+
+        return OrderDate.Date == promoDate && Products.Count >= 2;
+    }
+
+    public decimal TotalCost()
+    {
+        decimal total = 0;
+        foreach (var product in Products)
+        {
+            total += product.Cost;
+        }
+        return total;
+    }
+
+    public decimal ApplyDiscount()
+    {
+        return IsDiscountEligible() ? TotalCost() * 0.92m : TotalCost();
+    }
+
+    public void DisplayTransactionDetails()
+    {
+        Console.WriteLine($"Customer: {Customer.FirstName} {Customer.LastName} (Personal Number: {Customer.PersonalNumber})");
+        Console.WriteLine($"Order Date: {OrderDate}");
+        Console.WriteLine("Products:");
+
+        foreach (var product in Products)
+        {
+            Console.WriteLine($" - {product.Name} (Code: {product.Code}, Quantity: {product.Quantity}, Price: {product.Price:C}, Cost: {product.Cost:C})");
+        }
+
+        Console.WriteLine($"Total Cost: {TotalCost():C}");
+        if (IsDiscountEligible())
+        {
+            Console.WriteLine($"Discounted Total Cost: {ApplyDiscount():C} (8% discount applied)");
+        }
+        else
+        {
+            Console.WriteLine($"Total Cost (no discount): {TotalCost():C}");
+        }
+        Console.WriteLine();
+    }
+
+    private bool IsLeapYear(int year)
+    {
+        return DateTime.IsLeapYear(year);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Random random = new Random();
+        List<OnlineBooking> bookings = new List<OnlineBooking>();
+
+        // Create sample customers and products
+        Customer customer1 = new Customer("Alice", "Smith", "123456789");
+        Customer customer2 = new Customer("Bob", "Johnson", "987654321");
+
+        // Create some products
+        List<Product> products1 = new List<Product>
+        {
+            new Product("Laptop", "LPT123", 1, 999.99m),
+            new Product("Mouse", "MSE456", 2, 25.99m)
+        };
+
+        List<Product> products2 = new List<Product>
+        {
+            new Product("Keyboard", "KBD789", 1, 45.50m),
+            new Product("Monitor", "MNT101", 1, 199.99m)
+        };
+
+        // Randomly generate order dates
+        DateTime orderDate1 = new DateTime(2024, 9, 12, random.Next(24), random.Next(60), random.Next(60));
+        DateTime orderDate2 = new DateTime(2023, 9, 13, random.Next(24), random.Next(60), random.Next(60));
+
+        // Create bookings
+        bookings.Add(new OnlineBooking(customer1, products1, orderDate1));
+        bookings.Add(new OnlineBooking(customer2, products2, orderDate2));
+
+        // Display transaction details for each booking
+        foreach (var booking in bookings)
+        {
+            booking.DisplayTransactionDetails();
+        }
+    }
+}
+Classes:
+
+Customer: Holds customer information.
+Product: Holds product details, including a computed cost.
+OnlineBooking: Manages the booking, customer, products, and discount logic.
+Methods:
+
+IsDiscountEligible(): Checks if the order date is the 256th day of the year and if there are at least two products.
+TotalCost(): Computes the total cost of products.
+ApplyDiscount(): Applies an 8% discount if eligible.
+DisplayTransactionDetails(): Outputs detailed information about the transaction.
+Main Program:
+
+Creates several customer and product objects.
+Generates random order dates for bookings.
+Displays transaction details for each booking, highlighting discounts when applicable.
+Usage
+You can run this code in a C# environment, and it will simulate the online booking process, demonstrating how discounts are applied based on the specified criteria.

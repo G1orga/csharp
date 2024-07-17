@@ -1,0 +1,280 @@
+შექმენით კლასი Lecturer შემდეგი ველებით:სახელი,გვარი,პირადი ნომერი,სამუშაო სტაჟი,გამოქვეყნებული სტატიების რაოდენობა.
+
+შექმენით Lecturer კლასის რამდენიმე ობიექტი და განათავსეთ ისინი ArrayList-ში. 
+
+გადატვირთეთ Lecturer კლასისთვის IEnumerable, IEnumerator, IComparable, IComparer და IEquatable ინტერფეისები.
+
+დაალაგეთ Lecturer კლასის ობიექტების კოლექცია სორტირების მეთოდის გამოყენებით შემდეგნაირად:
+ა) გამოქვეყნებული სტატიების რაოდენობის მიხედვით კლებადობით;
+ბ) გვარის მიხედვით ანბანური თანმიმდევრობით;
+გ) სამუშაო სტაჟის მიხედვით კლებადობით;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+class Lecturer : IComparable<Lecturer>, IEquatable<Lecturer>
+{
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string PersonalNumber { get; }
+    public int Seniority { get; }
+    public int PublishedArticles { get; }
+
+    public Lecturer(string firstName, string lastName, string personalNumber, int seniority, int publishedArticles)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PersonalNumber = personalNumber;
+        Seniority = seniority;
+        PublishedArticles = publishedArticles;
+    }
+
+    public int CompareTo(Lecturer other)
+    {
+        if (other == null) return 1;
+        return PublishedArticles.CompareTo(other.PublishedArticles);
+    }
+
+    public bool Equals(Lecturer other)
+    {
+        if (other == null) return false;
+        return PersonalNumber == other.PersonalNumber;
+    }
+
+    public override int GetHashCode()
+    {
+        return PersonalNumber.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}, Personal Number: {PersonalNumber}, Seniority: {Seniority}, Published Articles: {PublishedArticles}";
+    }
+}
+
+class LecturerComparerByArticles : IComparer<Lecturer>
+{
+    public int Compare(Lecturer x, Lecturer y)
+    {
+        return y.PublishedArticles.CompareTo(x.PublishedArticles); // Decreasing order
+    }
+}
+
+class LecturerComparerByLastName : IComparer<Lecturer>
+{
+    public int Compare(Lecturer x, Lecturer y)
+    {
+        return string.Compare(x.LastName, y.LastName); // Alphabetical order
+    }
+}
+
+class LecturerComparerBySeniority : IComparer<Lecturer>
+{
+    public int Compare(Lecturer x, Lecturer y)
+    {
+        return y.Seniority.CompareTo(x.Seniority); // Decreasing order
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        ArrayList lecturers = new ArrayList
+        {
+            new Lecturer("Alice", "Smith", "PN001", 5, 10),
+            new Lecturer("Bob", "Johnson", "PN002", 8, 20),
+            new Lecturer("Charlie", "Brown", "PN003", 3, 15),
+            new Lecturer("David", "Davis", "PN004", 7, 25)
+        };
+
+        Console.WriteLine("Sorted by Published Articles (Decreasing):");
+        lecturers.Sort(new LecturerComparerByArticles());
+        DisplayLecturers(lecturers);
+
+        Console.WriteLine("Sorted by Last Name (Alphabetical):");
+        lecturers.Sort(new LecturerComparerByLastName());
+        DisplayLecturers(lecturers);
+
+        Console.WriteLine("Sorted by Seniority (Decreasing):");
+        lecturers.Sort(new LecturerComparerBySeniority());
+        DisplayLecturers(lecturers);
+    }
+
+    static void DisplayLecturers(ArrayList lecturers)
+    {
+        foreach (Lecturer lecturer in lecturers)
+        {
+            Console.WriteLine(lecturer);
+        }
+        Console.WriteLine();
+    }
+}
+Lecturer Class:
+
+Fields: FirstName, LastName, PersonalNumber, Seniority, and PublishedArticles.
+Implements IComparable<Lecturer> for comparison by published articles.
+Implements IEquatable<Lecturer> for equality checks.
+Comparers:
+
+LecturerComparerByArticles: Sorts by published articles in decreasing order.
+LecturerComparerByLastName: Sorts alphabetically by last name.
+LecturerComparerBySeniority: Sorts by seniority in decreasing order.
+Program Class:
+
+Creates an ArrayList of Lecturer objects.
+Sorts and displays the list using the specified comparers.
+Usage
+You can run this code in any C# development environment (like Visual Studio or a .NET Fiddle) to see how the Lecturer objects are sorted based on different criteria. Adjust the lecturers' details to test with different data as needed.
+-------------------------------------------------------------------------------
+პრაქტიკული სამუშაო:
+1.     შექმენით მშობელი კლასი [გამოცემა] შემდეგი ველებითა და მეთოდებით:
+ველები: დასახელება, ავტორი, გამოცემის წელი;
+მეთოდები: დეტალური ინფორმაციის ბეჭდვის ფუნქცია; ძებნა თარიღთა შუალედით;
+2.     შექმენით შემდეგი მემკვიდრე კლასები: 
+[წიგნი] (დასახელება, ავტორი, გამოცემის წელი, გამომცემლობა, გვერდების რაოდენობა);
+[სტატია] (დასახელება, ავტორი, ჟურნალის დასახელება, ნომერი და გამოცემის წელი, გვერდების რაოდენობა);
+[ელექტრონული რესურსი] (დასახელება, ავტორი, ბმული, ანოტაცია).
+3.     მთავარ პროგრამაში შექმენით მშობელი კლასის ობიექტების n ელემენტებიანი მასივი. შეავსეთ ინფორმაცია.
+4.     გამოიტანეთ ეკრანზე ინფორმაცია ყველა გამოცემის შესახებ;
+5.     აამუშავეთ ძიების მექანიზმი ისე, რომ თარიღის შუალედის მითითებით ეკრანზე გამოვიდეს ინფორმაცია მხოლოდ იმ გამოცემის შესახებ, რომლებიც მითითებულ შუალედში გამოქვეყნდა.
+გისურვებთ წარმატებებს! 
+using System;
+using System.Collections.Generic;
+
+public class Publication
+{
+    public string Title { get; set; }
+    public string Author { get; set; }
+    public int Year { get; set; }
+
+    public Publication(string title, string author, int year)
+    {
+        Title = title;
+        Author = author;
+        Year = year;
+    }
+
+    public virtual void PrintDetails()
+    {
+        Console.WriteLine($"Title: {Title}, Author: {Author}, Year: {Year}");
+    }
+
+    public static List<Publication> SearchByDateRange(List<Publication> publications, int startYear, int endYear)
+    {
+        List<Publication> results = new List<Publication>();
+        foreach (var pub in publications)
+        {
+            if (pub.Year >= startYear && pub.Year <= endYear)
+            {
+                results.Add(pub);
+            }
+        }
+        return results;
+    }
+}
+
+public class Book : Publication
+{
+    public string Publisher { get; set; }
+    public int Pages { get; set; }
+
+    public Book(string title, string author, int year, string publisher, int pages)
+        : base(title, author, year)
+    {
+        Publisher = publisher;
+        Pages = pages;
+    }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Publisher: {Publisher}, Pages: {Pages}");
+    }
+}
+
+public class Article : Publication
+{
+    public string Journal { get; set; }
+    public int Volume { get; set; }
+
+    public Article(string title, string author, string journal, int volume, int year)
+        : base(title, author, year)
+    {
+        Journal = journal;
+        Volume = volume;
+    }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Journal: {Journal}, Volume: {Volume}");
+    }
+}
+
+public class ElectronicResource : Publication
+{
+    public string Link { get; set; }
+
+    public ElectronicResource(string title, string author, int year, string link)
+        : base(title, author, year)
+    {
+        Link = link;
+    }
+
+    public override void PrintDetails()
+    {
+        base.PrintDetails();
+        Console.WriteLine($"Link: {Link}");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Publication> publications = new List<Publication>
+        {
+            new Book("C# Programming", "John Doe", 2021, "Tech Publishers", 350),
+            new Article("AI Research", "Jane Smith", "Journal of AI", 5, 2022),
+            new ElectronicResource("Learn C#", "Alice Johnson", 2020, "http://learncsharp.com"),
+            new Book("Data Structures", "Emily Davis", 2019, "Educational Publishers", 400),
+            new Article("Machine Learning", "Mark Wilson", "AI Journal", 3, 2023)
+        };
+
+        Console.WriteLine("All Publications:");
+        foreach (var pub in publications)
+        {
+            pub.PrintDetails();
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Search for publications from 2020 to 2022:");
+        var results = Publication.SearchByDateRange(publications, 2020, 2022);
+        
+        foreach (var pub in results)
+        {
+            pub.PrintDetails();
+            Console.WriteLine();
+        }
+    }
+}
+Parent Class: Publication
+
+Properties: Title, Author, Year.
+Methods:
+PrintDetails(): Displays basic information about the publication.
+SearchByDateRange(): Returns publications published within a specific year range.
+Child Classes:
+
+Book: Inherits from Publication and includes Publisher and Pages.
+Article: Inherits from Publication and includes Journal and Volume.
+ElectronicResource: Inherits from Publication and includes Link.
+Main Program:
+
+Creates a list of Publication objects.
+Displays all publications.
+Searches for publications within a specified date range and shows the results.
+Usage
+You can copy and paste this code into any C# environment (like Visual Studio or an online compiler) to see it in action. This structure is designed to be simple and straightforward for beginners to understand.
+
